@@ -1,0 +1,32 @@
+---
+- name: Installing apache2
+  apt:
+    name: apache2 
+    state: present
+
+- name:  configure apache2
+  shell: sed -i 's/80.*/'"$port_no"'/g' /etc/apache2/ports.conf
+
+- name:  configure apache2
+  shell: sed -i 's/*:80.*/*:'"$port_no"'>/g' /etc/apache2/sites-enabled/000-default.conf
+
+- name: Create Index page
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+
+- name: Change Varnish configuration
+  shell: sed -i 's/-a :6081/-a :80/g' /etc/default/varnish
+
+- name: Change Varnish configuration
+  shell: sed -i 's/"8080"/"'"$port_no"'"/g' /etc/varnish/default.vcl
+
+- name: Change Varnish configuration
+  shell: sed -i 's/-a :6081/-a :80/g' /lib/systemd/system/varnish.service
+  notify:
+    - Reload daemon
+    - Restart varnish
+
+
+
+

@@ -1,0 +1,8 @@
+---
+- import_tasks: centos_install.yml
+- import_tasks: debian_install.yml
+- import_tasks: service.yml
+- import_tasks: centos_install.yml
+- import_tasks: centos_install.yml
+
+

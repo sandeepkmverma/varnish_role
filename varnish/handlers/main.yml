@@ -1,0 +1,11 @@
+---
+- name: Restart varnish
+  systemd:
+    name: varnish
+    state: started
+    enabled: yes
+
+- name: Reload daemon
+  systemd:
+    daemon_reload: yes
+

@@ -1,0 +1,27 @@
+---
+  - name: Install apache and varnish
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+       - epel-release
+       - httpd
+       - varnish
+
+  - name: configure apache2
+    shell: sed -i 's/80/'"$port_no"'/g' /etc/httpd/conf/httpd.conf
+
+  - name: Create Index page
+    copy: 
+      src: index.html
+      dest: /var/www/html/index.html 
+
+  - name: Change Varnish configuration
+    shell: sed -i 's/VARNISH_LISTEN_PORT=.*/VARNISH_LISTEN_PORT=80/g' /etc/varnish/varnish.params
+    notify:
+    - Reload daemon
+    - Restart varnish
+ 
+  - name: Chnage listen port
+    shell: sed -i 's/"8080"/'"$port_no"'/g' /etc/varnish/default.vcl
+
